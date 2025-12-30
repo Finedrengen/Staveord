@@ -1,0 +1,31 @@
+name: Deploy to Debian (Apache)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Hvis du har en build (fx Vite/React/Next export), slå dette til:
+      # - name: Build
+      #   run: |
+      #     cd web
+      #     npm ci
+      #     npm run build
+
+      - name: Upload site via rsync over SSH
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr --delete
+          path: var/www/staveord.net/   # eller fx web/dist/ hvis du bygger
+          remote_path: /var/www/staveord/
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_KEY }}
+          remote_port: ${{ secrets.SSH_PORT }}

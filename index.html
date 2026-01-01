@@ -47,6 +47,8 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(8px);
             border: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
         }
 
         .sidebar {
@@ -54,10 +56,17 @@
             max-width: 380px;
             background: rgba(255, 255, 255, 0.95);
             padding: 24px;
-            overflow-y: auto;
+            overflow: visible;
             border-radius: 18px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            position: relative;
+            z-index: 2;
+        }
+
+        .sidebar-inner {
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
         }
 
         h1 {
@@ -181,12 +190,6 @@
             box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
         }
 
-        #next-button {
-            background: var(--accent-2);
-            color: #ffffff;
-            margin-left: 4px;
-            box-shadow: 0 6px 14px rgba(16, 185, 129, 0.2);
-        }
 
         #new-game-button {
             background: #0f766e;
@@ -429,6 +432,40 @@
             font-size: 1.1rem;
         }
 
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .settings-toggle {
+            border: none;
+            background: #e2e8f0;
+            color: #1f2937;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+        }
+
+        .settings-toggle:hover {
+            background: #cbd5f5;
+        }
+
+        .settings-body {
+            display: none;
+        }
+
+        .settings-card.is-open .settings-body {
+            display: block;
+        }
+
         .setting-row {
             display: flex;
             align-items: center;
@@ -456,6 +493,49 @@
 
         .mastery-list li {
             margin-bottom: 4px;
+        }
+
+        .info-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-left: 6px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #1f2937;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: default;
+        }
+
+        .info-tooltip .info-popover {
+            position: absolute;
+            top: 28px;
+            right: 0;
+            width: min(320px, 80vw);
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #1f2937;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+            z-index: 5;
+        }
+
+        .info-tooltip:hover .info-popover,
+        .info-tooltip:focus-within .info-popover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         .streak {
@@ -502,7 +582,6 @@
             <input id="answer-input" class="hidden-input" type="text" autocomplete="off" spellcheck="false" aria-label="Indtast ordet">
             <div id="letter-slots"></div>
             <button type="submit" id="check-button">Tjek</button>
-            <button type="button" id="next-button" disabled>Næste</button>
             <button type="button" id="new-game-button" style="display:none;">Spil igen</button>
         </form>
 
@@ -540,6 +619,7 @@
     </main>
 
     <aside class="sidebar">
+        <div class="sidebar-inner">
         <section class="card">
             <h2>Resultater</h2>
             <ul id="results-list"></ul>
@@ -548,22 +628,33 @@
         </section>
 
         <section class="card mastery-card">
-            <h3>Mestring</h3>
-            <p id="mastery-intro">
-                Her kan du se, hvilke ord du kan rigtig godt, og hvilke ord du skal &oslash;ve mere.
-                Ordene dukker op her, s&aring; du kan se, hvorfor spillet nogle gange giver dig bestemte ord igen.
-                Det hj&aelig;lper dig med at blive bedre til de sv&aelig;re ord.
-                "Skal &oslash;ves ofte" er de sv&aelig;re ord, som du skal &oslash;ve tit.
-                "Lidt bedre til", "Godt p&aring; vej" og "N&aelig;sten sikkert" er ord, du bliver bedre til.
-                "Kan sikkert" er ord, du kan rigtig godt, s&aring; de kommer kun en gang imellem.
-                Hold musen over en linje for at se ordene i den.
-            </p>
+            <h3>
+                Mestring
+                <span class="info-tooltip" aria-label="Info om mestring" tabindex="0">
+                    i
+                    <span class="info-popover">
+                        Her kan du se, hvilke ord du kan rigtig godt, og hvilke ord du skal &oslash;ve mere.
+                        Ordene dukker op her, s&aring; du kan se, hvorfor spillet nogle gange giver dig bestemte ord igen.
+                        Det hj&aelig;lper dig med at blive bedre til de sv&aelig;re ord.
+                        "Skal &oslash;ves ofte" er de sv&aelig;re ord, som du skal &oslash;ve tit.
+                        "Lidt bedre til", "Godt p&aring; vej" og "N&aelig;sten sikkert" er ord, du bliver bedre til.
+                        "Kan sikkert" er ord, du kan rigtig godt, s&aring; de kommer kun en gang imellem.
+                        Hold musen over ikonet for at se denne tekst.
+                    </span>
+                </span>
+            </h3>
             <ul id="mastery-list" class="mastery-list"></ul>
             <p id="due-count"></p>
         </section>
 
-        <section class="card settings-card">
-            <h3>Forældreindstillinger</h3>
+        <section class="card settings-card" id="settings-card">
+            <div class="settings-header">
+                <h3>Forældreindstillinger</h3>
+                <button type="button" id="settings-toggle" class="settings-toggle" aria-expanded="false" aria-controls="settings-body" title="Vis indstillinger">
+                    &#9881;
+                </button>
+            </div>
+            <div class="settings-body" id="settings-body">
             <div class="setting-group">
                 <strong>Kategorier</strong>
                 <div id="category-filters"></div>
@@ -598,7 +689,9 @@
                     <label for="setting-streak">Vis streak</label>
                 </div>
             </div>
+            </div>
         </section>
+        </div>
     </aside>
 </div>
 
@@ -618,7 +711,6 @@
     const audioButton = document.getElementById("audio-button");
     const answerForm = document.getElementById("answer-form");
     const checkButton = document.getElementById("check-button");
-    const nextButton = document.getElementById("next-button");
     const newGameButton = document.getElementById("new-game-button");
     const feedbackEl = document.getElementById("feedback");
     const letterFeedbackEl = document.getElementById("letter-feedback");
@@ -640,6 +732,9 @@
     const streakEl = document.getElementById("streak");
     const masteryListEl = document.getElementById("mastery-list");
     const dueCountEl = document.getElementById("due-count");
+    const settingsCardEl = document.getElementById("settings-card");
+    const settingsToggleButton = document.getElementById("settings-toggle");
+    const settingsBodyEl = document.getElementById("settings-body");
     const categoryFiltersEl = document.getElementById("category-filters");
     const difficultyEasyEl = document.getElementById("difficulty-easy");
     const difficultyMediumEl = document.getElementById("difficulty-medium");
@@ -647,6 +742,13 @@
     const settingHintEl = document.getElementById("setting-hint");
     const settingSlowEl = document.getElementById("setting-slow");
     const settingStreakEl = document.getElementById("setting-streak");
+
+    if (settingsCardEl && settingsToggleButton && settingsBodyEl) {
+        settingsToggleButton.addEventListener("click", function () {
+            const isOpen = settingsCardEl.classList.toggle("is-open");
+            settingsToggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+    }
 
     let settings;
     let stats;
@@ -1176,6 +1278,7 @@ const WORDS = buildWords();
     function updateMasteryUI() {
         const counts = [0, 0, 0, 0, 0];
         const wordsInBoxes = [[], [], [], [], []];
+        const dueWords = [];
         const now = Date.now();
         let due = 0;
 
@@ -1186,6 +1289,7 @@ const WORDS = buildWords();
             wordsInBoxes[box - 1].push(word.word);
             if (info.nextDue && info.nextDue <= now) {
                 due += 1;
+                dueWords.push(word.word);
             }
         }
 
@@ -1206,6 +1310,8 @@ const WORDS = buildWords();
             masteryListEl.appendChild(li);
         });
         dueCountEl.textContent = `Ord klar til gentagelse: ${due}`;
+        const dueList = dueWords.slice().sort((a, b) => a.localeCompare(b, "da-DK"));
+        dueCountEl.title = dueList.length ? dueList.join(", ") : "Ingen ord klar endnu.";
     }
 
     function shuffle(array) {
@@ -1322,9 +1428,6 @@ const WORDS = buildWords();
         streakCount = 0;
         updateStreakUI();
 
-        nextButton.disabled = true;
-        nextButton.style.display = "inline-block";
-        nextButton.textContent = "Næste";
         newGameButton.style.display = "none";
 
         showCurrentWord();
@@ -1369,7 +1472,6 @@ const WORDS = buildWords();
         answerInput.maxLength = currentWord.word.length;
         answerInput.focus();
         checkButton.disabled = false;
-        nextButton.disabled = true;
     }
 
     function showSpellingStep() {
@@ -1556,7 +1658,6 @@ const WORDS = buildWords();
         }
 
         checkButton.disabled = true;
-        nextButton.disabled = true;
         showSentenceStep();
     }
 
@@ -2037,7 +2138,6 @@ const WORDS = buildWords();
         showCurrentWord();
     }
 
-    nextButton.addEventListener("click", handleNextClick);
     sentenceNextButton.addEventListener("click", handleNextClick);
 
     newGameButton.addEventListener("click", function () {
@@ -2051,8 +2151,6 @@ const WORDS = buildWords();
         attemptsEl.textContent = "";
         sentenceStepEl.style.display = "none";
         answerForm.style.display = "flex";
-        nextButton.disabled = true;
-        nextButton.style.display = "none";
         newGameButton.style.display = "inline-block";
     }
 

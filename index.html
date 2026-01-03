@@ -285,6 +285,9 @@
         .sentence-step h3 {
             margin: 0 0 8px 0;
             font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         #sentence-input {
@@ -591,13 +594,18 @@
         <p id="attempts"></p>
 
         <section id="sentence-step" class="card sentence-step" style="display:none;">
-            <h3>Brug ordet i en sætning</h3>
-            <p class="sentence-help">
-                Du skal skrive en sætning med ordet du lige har stavet til. Denne sætning skal være på mindst fire
-                ord og hele sætningen skal være korrekt stavet. Hvis du har stavet noget forkert, bliver de forkerte
-                ord markeret med rød. Du kan rette ordene og klikke på tjek igen. Du kan først fortsætte, når du har
-                stavet helt korrekt.
-            </p>
+            <h3>
+                Brug ordet i en s‘tning
+                <span class="info-tooltip" aria-label="Info om sætning" tabindex="0">
+                    i
+                    <span class="info-popover">
+                        Du skal skrive en s‘tning med ordet du lige har stavet til. Denne s‘tning skal v‘re p† mindst fire
+                        ord og hele s‘tningen skal v‘re korrekt stavet. Hvis du har stavet noget forkert, bliver de forkerte
+                        ord markeret med r›d. Du kan rette ordene og klikke p† tjek igen. Du kan f›rst forts‘tte, n†r du har
+                        stavet helt korrekt.
+                    </span>
+                </span>
+            </h3>
             <input id="sentence-input" type="text" spellcheck="true" lang="da" autocomplete="off">
             <div id="sentence-preview" class="sentence-preview"></div>
             <ul id="sentence-errors"></ul>
@@ -3111,7 +3119,7 @@ const WORDS = buildWords();
                 `Det korrekte ord var: <span class="correct-word">${currentWord.word}</span>.`;
             feedbackEl.className = "incorrect";
         } else if (usedCorrection) {
-            feedbackEl.textContent = "Godt! Du skrev ordet korrekt. Nu skal du bruge ordet i en søtning.";
+            feedbackEl.textContent = "Godt! Du skrev ordet korrekt. Nu skal du bruge ordet i en sætning.";
             feedbackEl.className = "correct";
         }
 
@@ -3616,6 +3624,7 @@ const WORDS = buildWords();
 </script>
 </body>
 </html>
+
 
 
 
